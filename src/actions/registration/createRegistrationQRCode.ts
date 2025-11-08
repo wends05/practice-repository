@@ -4,7 +4,8 @@ import QRCode from "qrcode";
 import type { EventRegisterForm } from "@/schema/Registration";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
-import { cryptr } from "..";
+import Cryptr from "cryptr";
+import { CRYPTR_SECRET } from "..";
 
 export const createRegistrationQRCode = async (
   eventId: string,
@@ -24,6 +25,8 @@ export const createRegistrationQRCode = async (
       otherPeople: registrationData.otherPeople,
     },
   });
+
+  const cryptr = new Cryptr(CRYPTR_SECRET);
 
   const qrcodePattern = `IBC-${eventId}-REGISTRATION-${registrationData.name}-${registrationData.email}`;
   const encryptedData = cryptr.encrypt(qrcodePattern);
