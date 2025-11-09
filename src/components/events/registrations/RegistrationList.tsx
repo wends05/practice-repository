@@ -18,9 +18,9 @@ export default function EventRegistrationList({
   }
   
   return (
-    <ul>
+    <ul className="space-y-3">
       {eventRegistrations.map((registration) => (
-        <RegistrationCard registration={registration} key={registration._id} />
+        <RegistrationCard registrantWithPaymentMethod={registration} key={registration._id} />
       ))}
     </ul>
   );

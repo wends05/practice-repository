@@ -1,19 +1,14 @@
-import { type Preloaded, usePreloadedQuery } from "convex/react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Item, ItemContent } from "@/components/ui/item";
 import { useEventRegistrationStore } from "@/stores/event-registration";
-import type { api } from "../../../convex/_generated/api";
-import RegisterActionButtons from "./RegisterActionButtons";
+import type { Doc } from "../../../convex/_generated/dataModel";
 
 interface RegistrationPageStartProps {
-  preloadedEventData: Preloaded<typeof api.events.getEventById>;
+  event: Doc<"events">;
 }
 export default function RegistrationPageStart({
-  preloadedEventData,
+  event,
 }: RegistrationPageStartProps) {
-  const event = usePreloadedQuery(preloadedEventData);
-
   const nextStep = useEventRegistrationStore((state) => state.nextStep);
 
   return (

@@ -1,10 +1,11 @@
 "use server";
 
 import { fetchMutation } from "convex/nextjs";
+import { ConvexError } from "convex/values";
+import Cryptr from "cryptr";
 import { parseIBCString } from "@/lib/utils";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
-import Cryptr from "cryptr";
 import { CRYPTR_SECRET } from "..";
 
 export const scanRegistrationQRCode = async (qrCodeData: string) => {
@@ -16,14 +17,30 @@ export const scanRegistrationQRCode = async (qrCodeData: string) => {
   if (!parsedQRCode) {
     throw new Error("Invalid QR code data");
   }
+  try {
+    const registrationData = await fetchMutation(
+      api.registrations.checkInRegistrant,
+      {
+        eventId: parsedQRCode.eventId as Id<"events">,
+        email: parsedQRCode.email,
+      }
+    );
 
-  const registrationData = await fetchMutation(
-    api.registration.markRegistrationAsPaid,
-    {
-      eventId: parsedQRCode.eventId as Id<"event">,
-      email: parsedQRCode.email,
+    return {
+      message: "Checked In successfully",
+      data: registrationData,
+    };
+  } catch (error) {
+    if (error instanceof ConvexError) {
+      const { data, message } = error.data;
+
+      if (data)
+        return {
+          message,
+          data,
+        };
+      throw new Error(message);
     }
-  );
-
-  return registrationData;
+    throw error;
+  }
 };

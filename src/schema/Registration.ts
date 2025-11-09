@@ -13,7 +13,6 @@ export const EventRegisterFormSchema = RegistrantSchema.extend({
   date: z.date().default(new Date()),
   affiliation: z.string().min(1, "Affiliation is required").max(200),
   otherPeople: z.array(RegistrantSchema).optional(),
-  qrCodeURL: z.string().optional(),
 }).refine(
   (data) => {
     if (data.paymentMethod === "BPI") {

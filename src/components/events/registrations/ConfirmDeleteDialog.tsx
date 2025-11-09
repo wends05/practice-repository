@@ -1,6 +1,6 @@
 import { Trash } from "lucide-react";
 import { useState } from "react";
-import { deleteRegistration } from "@/actions/registration/deleteRegistration";
+import {  deleteRegistrant} from "@/actions/registration/deleteRegistration";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,15 +14,15 @@ import {
 import type { Id } from "../../../../convex/_generated/dataModel";
 
 interface ConfirmDeleteDialogProps {
-  registrationId: Id<"registration">;
+  registrantId: Id<"registrants">;
 }
 export default function ConfirmDeleteDialog({
-  registrationId,
+  registrantId,
 }: ConfirmDeleteDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = async () => {
-    await deleteRegistration(registrationId);
+    await deleteRegistrant(registrantId);
     setIsOpen(false);
   };
   return (

@@ -1,5 +1,3 @@
-import { Trash } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
@@ -11,22 +9,36 @@ import type { Doc } from "../../../../convex/_generated/dataModel";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 
 interface RegistrationItemProps {
-  registration: Doc<"registration">;
+  registrantWithPaymentMethod: Doc<"registrants"> & {
+    paymentMethod: Doc<"registrations">["paymentMethod"];
+  };
 }
 export default function RegistrationCard({
-  registration,
+  registrantWithPaymentMethod,
 }: RegistrationItemProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{registration.name}</CardTitle>
-        <CardDescription>
-          Email: {registration.email} - Paid: {registration.paid ? "Yes" : "No"}
-        </CardDescription>
-      </CardHeader>
-      <CardFooter>
-        <ConfirmDeleteDialog registrationId={registration._id} />
-      </CardFooter>
-    </Card>
+    <li>
+      <Card>
+        <CardHeader>
+          <CardTitle>{registrantWithPaymentMethod.name}</CardTitle>
+          <CardDescription>
+            <div className="">
+              <div>Email: {registrantWithPaymentMethod.email}</div>
+              <div>
+                Payment Method: {registrantWithPaymentMethod.paymentMethod}
+              </div>
+              <div>Paid: {registrantWithPaymentMethod.paid ? "Yes" : "No"}</div>
+              <div>
+                Checked In:{" "}
+                {registrantWithPaymentMethod.checkedIn ? "Yes" : "No"}
+              </div>
+            </div>
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <ConfirmDeleteDialog registrantId={registrantWithPaymentMethod._id} />
+        </CardFooter>
+      </Card>
+    </li>
   );
 }

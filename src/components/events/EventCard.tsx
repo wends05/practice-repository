@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 
 interface Event {
-  event: Doc<"event">;
+  event: Doc<"events">;
 }
 export default function EventCard({ event }: Event) {
   return (
@@ -33,6 +33,9 @@ export default function EventCard({ event }: Event) {
           </Link>
           <Link href={`/wends-pages/events/${event._id}`}>
             <Button variant={"outline"}>View Details</Button>
+          </Link>
+          <Link href={`/wends-pages/events/${event._id}/registrations`}>
+            <Button variant={"outline"}>View Registrations</Button>
           </Link>
         </div>
       </CardFooter>

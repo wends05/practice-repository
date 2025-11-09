@@ -7,6 +7,7 @@ interface EventRegistrationState {
   formData: EventRegisterForm;
   step: number;
   MAX_STEP: number;
+  qrCodes: Array<{ name: string; email: string; qrCodeDataURL: string }>;
 }
 
 interface EventRegistrationActions {
@@ -14,6 +15,9 @@ interface EventRegistrationActions {
   prevStep: () => void;
   nextStep: () => void;
   resetForm: () => void;
+  setQrCodes: (
+    qrCodes: Array<{ name: string; email: string; qrCodeDataURL: string }>
+  ) => void;
 }
 
 const initialValues: EventRegisterForm = {
@@ -48,7 +52,9 @@ export const useEventRegistrationStore = create<
         set((state) => ({
           formData: { ...state.formData, ...data },
         })),
-      resetForm: () => set({ step: 1 }),
+      qrCodes: [],
+      setQrCodes: (qrCodes) => set({ qrCodes }),
+      resetForm: () => set({ step: 1, formData: initialValues }),
     }),
     {
       name: "event-registration-store",

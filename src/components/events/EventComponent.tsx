@@ -1,19 +1,15 @@
 "use client";
-import { type Preloaded, usePreloadedQuery } from "convex/react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import type { api } from "../../../convex/_generated/api";
+import type { Doc } from "../../../convex/_generated/dataModel";
 import { Button } from "../ui/button";
 import { Item, ItemContent, ItemHeader } from "../ui/item";
 
 interface EventInformationProps {
-  preloadedEventInformation: Preloaded<typeof api.events.getEventById>;
+  event: Doc<"events">;
 }
-export default function EventPage({
-  preloadedEventInformation,
-}: EventInformationProps) {
+export default function EventPage({ event }: EventInformationProps) {
   const { id } = useParams();
-  const event = usePreloadedQuery(preloadedEventInformation);
 
   if (!event) {
     return notFound();

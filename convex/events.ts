@@ -9,7 +9,7 @@ export const createEvent = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const eventId = await ctx.db.insert("event", {
+    const eventId = await ctx.db.insert("events", {
       name: args.name,
       date: args.date,
       location: args.location,
@@ -21,7 +21,7 @@ export const createEvent = mutation({
 
 export const getEventById = query({
   args: {
-    eventId: v.id("event"),
+    eventId: v.id("events"),
   },
   handler: async (ctx, args) => {
     const event = await ctx.db.get(args.eventId);
@@ -31,20 +31,33 @@ export const getEventById = query({
 
 export const getAllEvents = query({
   handler: async (ctx) => {
-    const events = await ctx.db.query("event").collect();
+    const events = await ctx.db.query("events").collect();
     return events;
   },
 });
 
 export const getRegistrationsByEventId = query({
   args: {
-    eventId: v.id("event"),
+    eventId: v.id("events"),
   },
   handler: async (ctx, args) => {
     const registrations = await ctx.db
-      .query("registration")
+      .query("registrants")
       .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
       .collect();
-    return registrations;
+
+      
+    return Promise.all(
+      registrations.map(async (registrant) => {
+        const registration = await ctx.db.get(registrant.registrationId);
+        if (!registration) {
+          throw new Error("Registration not found");
+        }
+        return {
+         ...registrant,
+          paymentMethod: registration?.paymentMethod,
+        };
+      })
+    );
   },
 });

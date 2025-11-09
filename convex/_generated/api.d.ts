@@ -9,7 +9,7 @@
  */
 
 import type * as events from "../events.js";
-import type * as registration from "../registration.js";
+import type * as registrations from "../registrations.js";
 
 import type {
   ApiFromModules,
@@ -27,7 +27,7 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   events: typeof events;
-  registration: typeof registration;
+  registrations: typeof registrations;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

@@ -16,22 +16,20 @@ export default function RegisterStep3() {
   const formData = useEventRegistrationStore((state) => state.formData);
   const prevStep = useEventRegistrationStore((state) => state.prevStep);
   const nextStep = useEventRegistrationStore((state) => state.nextStep);
-  const setFormData = useEventRegistrationStore((state) => state.setFormData);
+  const setQrCodes = useEventRegistrationStore((state) => state.setQrCodes);
 
-  const { id } = useParams();
   const handlePrevStep = () => {
     prevStep();
   };
-  const handleSubmit = async () => {
-    console.log("Submitting registration...");
 
+  const { id } = useParams();
+
+  const handleSubmit = async () => {
     if (!id || Array.isArray(id) || id.length === 0) {
-      console.error("No event ID found in URL parameters.");
       return;
     }
-    const url = await createRegistrationQRCode(id, formData);
-    console.log("QR Code URL:", url);
-    setFormData({ ...formData, qrCodeURL: url });
+    const qrCodes = await createRegistrationQRCode(id, formData);
+    setQrCodes(qrCodes);
     nextStep();
   };
   return (

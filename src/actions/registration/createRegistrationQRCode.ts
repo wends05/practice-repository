@@ -1,10 +1,10 @@
 "use server";
 import { fetchMutation } from "convex/nextjs";
+import Cryptr from "cryptr";
 import QRCode from "qrcode";
 import type { EventRegisterForm } from "@/schema/Registration";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
-import Cryptr from "cryptr";
 import { CRYPTR_SECRET } from "..";
 
 export const createRegistrationQRCode = async (
@@ -13,8 +13,8 @@ export const createRegistrationQRCode = async (
 ) => {
   console.log("Generating QR Code for registration data:", registrationData);
 
-  await fetchMutation(api.registration.createRegistration, {
-    eventId: eventId as Id<"event">,
+  await fetchMutation(api.registrations.createRegistration, {
+    eventId: eventId as Id<"events">,
     registrationData: {
       name: registrationData.name,
       email: registrationData.email,
@@ -27,14 +27,32 @@ export const createRegistrationQRCode = async (
   });
 
   const cryptr = new Cryptr(CRYPTR_SECRET);
+  const registrants = [
+    {
+      name: registrationData.name,
+      email: registrationData.email,
+    },
+    ...(registrationData.otherPeople || []).map((person) => ({
+      name: person.name,
+      email: person.email,
+    })),
+  ];
 
-  const qrcodePattern = `IBC-${eventId}-REGISTRATION-${registrationData.name}-${registrationData.email}`;
-  const encryptedData = cryptr.encrypt(qrcodePattern);
-  const qrCodeDataURL = await QRCode.toDataURL(encryptedData, {
-    errorCorrectionLevel: "H",
-    type: "image/png",
-  });
+  const qrCodes = await Promise.all(
+    registrants.map(async (registrant) => {
+      const qrcodePattern = `IBC-${eventId}-REGISTRATION-${registrant.name}-${registrant.email}`;
+      const encryptedData = cryptr.encrypt(qrcodePattern);
+      const qrCodeDataURL = await QRCode.toDataURL(encryptedData, {
+        errorCorrectionLevel: "H",
+        type: "image/png",
+      });
+      return {
+        name: registrant.name,
+        email: registrant.email,
+        qrCodeDataURL,
+      };
+    })
+  );
 
-  console.log("Generated QR Code Data URL:", qrCodeDataURL);
-  return qrCodeDataURL;
+  return qrCodes;
 };

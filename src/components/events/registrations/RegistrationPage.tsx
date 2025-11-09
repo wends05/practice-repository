@@ -1,24 +1,24 @@
 "use client";
-import { type Preloaded, usePreloadedQuery } from "convex/react";
+import type { Preloaded } from "convex/react";
 import type { api } from "../../../../convex/_generated/api";
+import type { Doc } from "../../../../convex/_generated/dataModel";
 import EventRegistrationList from "./RegistrationList";
 
 interface RegistrationPageProps {
   preloadedEventRegistrations: Preloaded<
     typeof api.events.getRegistrationsByEventId
   >;
-  preloadedEventDetails: Preloaded<typeof api.events.getEventById>;
+  event: Doc<"events">;
 }
 export default function RegistrationPage({
   preloadedEventRegistrations,
-  preloadedEventDetails,
+  event,
 }: RegistrationPageProps) {
-  const event = usePreloadedQuery(preloadedEventDetails);
   return (
     <main className="space-y-5">
       <div>
         <h2>Registrations for: </h2>
-        <h3>{event?.name}</h3>
+        <h3>{event.name}</h3>
       </div>
       <EventRegistrationList
         preloadedEventRegistrations={preloadedEventRegistrations}

@@ -1,4 +1,4 @@
-import { preloadQuery } from "convex/nextjs";
+import { fetchQuery, preloadQuery } from "convex/nextjs";
 import RegistrationPage from "@/components/events/registrations/RegistrationPage";
 import { api } from "../../../../../../convex/_generated/api";
 import type { Id } from "../../../../../../convex/_generated/dataModel";
@@ -12,18 +12,21 @@ export default async function Registrations({
   const preloadedEventRegistrations = await preloadQuery(
     api.events.getRegistrationsByEventId,
     {
-      eventId: id as Id<"event">,
+      eventId: id as Id<"events">,
     }
   );
 
-  const preloadedEventDetails = await preloadQuery(api.events.getEventById, {
-    eventId: id as Id<"event">,
+  const event = await fetchQuery(api.events.getEventById, {
+    eventId: id as Id<"events">,
   });
 
+  if (!event) {
+    return <div>Event not found</div>;
+  }
   return (
     <RegistrationPage
       preloadedEventRegistrations={preloadedEventRegistrations}
-      preloadedEventDetails={preloadedEventDetails}
+      event={event}
     />
   );
 }

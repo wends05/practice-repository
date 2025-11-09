@@ -3,11 +3,12 @@ import { persist } from "zustand/middleware";
 import type { Doc } from "../../convex/_generated/dataModel";
 
 type ScanRegistrationData = {
-  scannedRegistrationData: Doc<"registration"> | null;
+  scannedRegistrationData: Doc<"registrants"> | null;
 };
 
 type ScanRegistrationActions = {
-  setScannedRegistrationData: (data: Doc<"registration"> | null) => void;
+  setScannedRegistrationData: (data: Doc<"registrants"> | null) => void;
+  resetData: () => void;
 };
 
 export const useScanRegistrationStore = create<
@@ -18,6 +19,7 @@ export const useScanRegistrationStore = create<
       scannedRegistrationData: null,
       setScannedRegistrationData: (data) =>
         set({ scannedRegistrationData: data }),
+      resetData: () => set({ scannedRegistrationData: null }),
     }),
     {
       name: "scan-registration-store",

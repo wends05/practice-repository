@@ -1,6 +1,8 @@
 "use client";
 import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
+import type { ConvexError } from "convex/values";
 import { useState } from "react";
+import { toast } from "sonner";
 import { scanRegistrationQRCode } from "@/actions/registration/scanRegistrationQRCode";
 import { useScanRegistrationStore } from "@/stores/scan-registration";
 import ReturnButton from "../ReturnButton";
@@ -17,15 +19,30 @@ export default function ScanComponent() {
   );
 
   const [paused, setPaused] = useState(false);
+  const [facingMode, setFacingMode] = useState<"user" | "environment">(
+    "environment"
+  );
 
   const handleScan = async (data: IDetectedBarcode[]) => {
     setPaused(true);
-    if (data.length > 0) {
+    if (data.length === 0) return;
+
+    try {
       const qrCodeData = data[0].rawValue;
-      const registrationData = await scanRegistrationQRCode(qrCodeData);
+      const { message, data: registrationData } =
+        await scanRegistrationQRCode(qrCodeData);
       if (registrationData) {
         setScannedRegistrationData(registrationData);
       }
+      if (message) {
+        toast.info(message);
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Unknown error. Please try again.";
+      toast.error(`Error scanning QR code: ${errorMessage}`);
     }
   };
 
@@ -41,6 +58,7 @@ export default function ScanComponent() {
                 console.error(err);
               }}
               constraints={{
+                facingMode,
                 aspectRatio: 1,
                 width: {
                   ideal: 500,
@@ -58,11 +76,23 @@ export default function ScanComponent() {
           </div>
           {scannedRegistrationData && (
             <RegistrationDetails
+              setPaused={setPaused}
               scannedRegistrationData={scannedRegistrationData}
             />
           )}
         </div>
-        {paused && <Button onClick={() => setPaused(false)}>Unpause</Button>}
+        <div className="space-x-3">
+          <Button
+            onClick={() =>
+              setFacingMode((prev) =>
+                prev === "user" ? "environment" : "user"
+              )
+            }
+          >
+            Switch Camera
+          </Button>
+          {paused && <Button onClick={() => setPaused(false)}>Unpause</Button>}
+        </div>
       </div>
     </div>
   );
