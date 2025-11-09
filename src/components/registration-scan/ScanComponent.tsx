@@ -1,6 +1,5 @@
 "use client";
 import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
-import type { ConvexError } from "convex/values";
 import { useState } from "react";
 import { toast } from "sonner";
 import { scanRegistrationQRCode } from "@/actions/registration/scanRegistrationQRCode";
