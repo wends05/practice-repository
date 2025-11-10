@@ -18,7 +18,6 @@ const eventRegisterFormStep1Opts = (formData: EventRegisterFormStep1) =>
   formOptions({
     defaultValues: formData,
     validators: {
-      onBlur: EventRegisterFormStep1Schema,
       onSubmit: EventRegisterFormStep1Schema,
     },
   });
@@ -31,8 +30,10 @@ export default function useEventRegisterStep1Form() {
     onSubmitMeta: {
       prev: false,
     },
-    onSubmitInvalid: ({ meta }) => {
+    onSubmitInvalid: ({ meta, value }) => {
       if (meta.prev) {
+        setFormData(value);
+
         prevStep();
       }
     },

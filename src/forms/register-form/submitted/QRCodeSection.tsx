@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Item, ItemContent } from "@/components/ui/item";
 import { useEventRegistrationStore } from "@/stores/event-registration";
@@ -45,8 +44,15 @@ export default function QRCodeSection({ eventDetails }: QRCodeSectionProps) {
               variant={"outline"}
             >
               <ItemContent className="flex flex-col items-center">
-                <div className=" bg-slate-500 flex items-center justify-center relative h-50 w-50">
-                  <Image src={code.qrCodeDataURL} alt="QR Code" fill />
+                <div className="flex flex-col items-center">
+                  <div className=" bg-slate-500 flex items-center justify-center relative h-50 w-50">
+                    <Image src={code.qrCodeDataURL} alt="QR Code" fill />
+                  </div>
+                  <div className="flex w-full items-center flex-col">
+                    <h4 className="">{code.name}</h4>
+                    <p>{code.email}</p>
+                    <p>{eventDetails.name}</p>
+                  </div>
                 </div>
                 <Button
                   onClick={() =>

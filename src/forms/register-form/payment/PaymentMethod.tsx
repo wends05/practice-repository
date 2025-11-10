@@ -30,7 +30,7 @@ export default function PaymentMethod({ f }: PaymentMethodProps) {
       <f.AppField
         name="paymentMethod"
         listeners={{
-          onSubmit: ({ value }) => {
+          onChange: ({ value }) => {
             if (value === "ONSITE") {
               f.setFieldValue("paymentProofImage", undefined);
             }
@@ -66,14 +66,6 @@ export default function PaymentMethod({ f }: PaymentMethodProps) {
                     name="paymentProofImage"
                     validators={{
                       onChange: ({ value, fieldApi }) => {
-                        const paymentMethod =
-                          fieldApi.form.getFieldValue("paymentMethod");
-                        if (paymentMethod === "BPI" && !value) {
-                          return "Payment proof is required for BPI payments";
-                        }
-                        return undefined;
-                      },
-                      onBlur: ({ value, fieldApi }) => {
                         const paymentMethod =
                           fieldApi.form.getFieldValue("paymentMethod");
                         if (paymentMethod === "BPI" && !value) {
@@ -120,7 +112,10 @@ export default function PaymentMethod({ f }: PaymentMethodProps) {
                           </InputGroup>
                           <FieldError
                             errors={field.state.meta.errors.map((message) => ({
-                              message,
+                              message:
+                                typeof message === "string"
+                                  ? message
+                                  : message?.message,
                             }))}
                           />
                         </Field>
