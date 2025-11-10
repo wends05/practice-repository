@@ -15,7 +15,9 @@ const eventRegisterFormStep2Opts = (formData: EventRegisterFormStep2) =>
   formOptions({
     defaultValues: formData,
     validators: {
-      onSubmit: EventRegisterFormStep2Schema,
+      onChange: (values) => {
+        EventRegisterFormStep2Schema.parse(values);
+      },
     },
   });
 
@@ -24,15 +26,25 @@ export default function useEventRegisterStep2Form() {
     useEventRegistrationStore();
   const f = useAppForm({
     ...eventRegisterFormStep2Opts(formData),
-    onSubmit: async ({ value }) => {
+    onSubmitMeta: {
+      prev: false,
+    },
+    onSubmitInvalid: ({ meta, value }) => {
+      console.log(value.paymentMethod);
+      if (meta.prev) {
+        prevStep();
+      }
+    },
+    onSubmit: async ({ value, meta }) => {
       setFormData(value);
       console.log("Step 2 data saved:", { ...formData, ...value });
+      if (meta.prev) {
+        prevStep();
+      } else {
+        nextStep();
+      }
     },
   });
 
-  return {
-    f,
-    nextStep,
-    prevStep,
-  };
+  return f;
 }

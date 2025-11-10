@@ -28,7 +28,11 @@ export default function FormSelect({
     <Field className="space-y-2">
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <div className="space-y-1">
-        <Select value={field.state.value} onValueChange={field.handleChange}>
+        <Select
+          name={field.name}
+          value={field.state.value}
+          onValueChange={(val) => field.handleChange(val)}
+        >
           <SelectTrigger id={id} className="w-full">
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>

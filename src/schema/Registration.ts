@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 import { PaymentMethodSchema } from "./PaymentMethod";
 
 export const RegistrantSchema = z.object({

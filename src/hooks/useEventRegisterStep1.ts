@@ -18,6 +18,7 @@ const eventRegisterFormStep1Opts = (formData: EventRegisterFormStep1) =>
   formOptions({
     defaultValues: formData,
     validators: {
+      onBlur: EventRegisterFormStep1Schema,
       onSubmit: EventRegisterFormStep1Schema,
     },
   });
@@ -27,10 +28,24 @@ export default function useEventRegisterStep1Form() {
     useEventRegistrationStore();
   const f = useAppForm({
     ...eventRegisterFormStep1Opts(formData),
-    onSubmit: async ({ value }) => {
-      setFormData(value);
+    onSubmitMeta: {
+      prev: false,
+    },
+    onSubmitInvalid: ({ meta }) => {
+      if (meta.prev) {
+        prevStep();
+      }
+    },
+    onSubmit: async ({ value, meta }) => {
       console.log("Step 1 data saved:", { ...formData, ...value });
+
+      if (meta.prev) {
+        prevStep();
+      } else {
+        nextStep();
+      }
+      setFormData({ ...formData, ...value });
     },
   });
-  return { f, nextStep, prevStep };
+  return f;
 }

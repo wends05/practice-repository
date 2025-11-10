@@ -6,21 +6,18 @@ import PersonalInfo from "./main/PersonalInfo";
 import RegisterActionButtons from "./RegisterActionButtons";
 
 export default function RegisterStep1() {
-  const { f, nextStep, prevStep } = useEventRegisterStep1Form();
+  const f = useEventRegisterStep1Form();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
   };
-
   const handlePrevStep = () => {
-    f.handleSubmit();
-    prevStep();
+    f.handleSubmit({ prev: true });
   };
 
-  const handleNextStep = () => {
-    f.handleSubmit();
-    nextStep();
+  const handleNextStep = async () => {
+    f.handleSubmit({ prev: false });
   };
 
   return (

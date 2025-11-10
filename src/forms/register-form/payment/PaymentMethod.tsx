@@ -14,7 +14,7 @@ import type useEventRegisterStep2Form from "@/hooks/useEventRegisterStep2";
 import { PaymentMethodSchema } from "@/schema/PaymentMethod";
 
 interface PaymentMethodProps {
-  f: ReturnType<typeof useEventRegisterStep2Form>["f"];
+  f: ReturnType<typeof useEventRegisterStep2Form>;
 }
 export default function PaymentMethod({ f }: PaymentMethodProps) {
   const imageRef = useRef<HTMLInputElement | null>(null);
@@ -29,12 +29,6 @@ export default function PaymentMethod({ f }: PaymentMethodProps) {
     <>
       <f.AppField
         name="paymentMethod"
-        validators={{
-          onChange: ({ value }) => {
-            const result = PaymentMethodSchema.safeParse(value);
-            return result.success ? undefined : result.error.issues[0]?.message;
-          },
-        }}
         listeners={{
           onSubmit: ({ value }) => {
             if (value === "ONSITE") {
@@ -125,8 +119,8 @@ export default function PaymentMethod({ f }: PaymentMethodProps) {
                             />
                           </InputGroup>
                           <FieldError
-                            errors={field.state.meta.errors.map((err) => ({
-                              message: typeof err === 'string' ? err : err?.message,
+                            errors={field.state.meta.errors.map((message) => ({
+                              message,
                             }))}
                           />
                         </Field>
